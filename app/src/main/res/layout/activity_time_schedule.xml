@@ -66,21 +66,30 @@
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="16dp"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"></androidx.core.widget.NestedScrollView>
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorNull">
 
-        <DatePicker
-            android:id="@+id/datePicker"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:calendarViewShown="true"
-            android:datePickerMode="calendar"
-            android:paddingStart="8dp"
-            android:paddingEnd="0dp" />
+            android:layout_height="match_parent"
+            android:background="@color/colorNull">
 
-    </RelativeLayout>
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:calendarViewShown="true"
+                android:datePickerMode="calendar"
+                android:paddingStart="8dp"
+                android:paddingEnd="0dp" />
+
+            <com.workmanager.onetimerequest.TimePickerCustom
+                android:id="@+id/timePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/datePicker"
+                android:timePickerMode="spinner" />
+
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
