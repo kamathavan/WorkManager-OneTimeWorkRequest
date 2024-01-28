@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.workmanager.onetimerequest"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.workmanager.onetimerequest"
