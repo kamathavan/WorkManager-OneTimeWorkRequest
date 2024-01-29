@@ -1,17 +1,20 @@
 package com.workmanager.onetimerequest
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.make
 import com.workmanager.onetimerequest.databinding.ActivityTimeScheduleBinding
 import com.workmanager.onetimerequest.notify.NotifyOneTimeRequest
 import com.workmanager.onetimerequest.notify.NotifyOneTimeRequest.Companion.NOTIFICATION_ID
@@ -23,7 +26,7 @@ import java.util.concurrent.TimeUnit
 
 class TimeScheduleActivity : AppCompatActivity() {
 
-    private lateinit var getNotificationPermissionGranted: ActivityResultLauncher<String>
+    private lateinit var getNotificationPermission: ActivityResultLauncher<String>
     private lateinit var binding: ActivityTimeScheduleBinding
 
     var isPermissionEnabled = false
@@ -34,10 +37,30 @@ class TimeScheduleActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        getNotificationPermissionGranted =
+        getNotificationPermission =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isPermissionGranted: Boolean ->
                 isPermissionEnabled = isPermissionGranted
             }
+
+        setCalenderInputValue()
+        checkPermission()
+    }
+
+    private fun checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                isPermissionEnabled = true
+            } else {
+                isPermissionEnabled = false
+                getNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        } else {
+            isPermissionEnabled = true
+        }
     }
 
     private fun setCalenderInputValue() {
@@ -74,27 +97,25 @@ class TimeScheduleActivity : AppCompatActivity() {
                         patternNotificationSchedule,
                         Locale.getDefault()
                     ).format(customCalendar.time).toString()
-                    showSnakeBar(
-                        binding.coordinatorLayout,
-                        scheduledTime
-                    )
+                    make(binding.coordinatorLayout, scheduledTime, Snackbar.LENGTH_LONG).show()
                 } else {
                     val errorNotificationSchedule = getString(R.string.notification_schedule_error)
-                    showSnakeBar(
+                    make(
                         binding.coordinatorLayout,
-                        errorNotificationSchedule
-                    )
+                        errorNotificationSchedule,
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    getNotificationPermissionGranted.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    getNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
         }
     }
 
     private fun showSnakeBar(view: View, time: String) {
-        Snackbar.make(
+        make(
             view,
             time,
             Snackbar.LENGTH_LONG
