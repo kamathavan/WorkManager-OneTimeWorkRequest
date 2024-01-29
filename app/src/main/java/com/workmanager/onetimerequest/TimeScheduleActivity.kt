@@ -97,14 +97,17 @@ class TimeScheduleActivity : AppCompatActivity() {
                         patternNotificationSchedule,
                         Locale.getDefault()
                     ).format(customCalendar.time).toString()
-                    make(binding.coordinatorLayout, scheduledTime, Snackbar.LENGTH_LONG).show()
+
+                    showSnakeBar(
+                        view = binding.coordinatorLayout,
+                        time = scheduledTime
+                    )
                 } else {
                     val errorNotificationSchedule = getString(R.string.notification_schedule_error)
-                    make(
-                        binding.coordinatorLayout,
-                        errorNotificationSchedule,
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    showSnakeBar(
+                        view = binding.coordinatorLayout,
+                        time = errorNotificationSchedule
+                    )
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
